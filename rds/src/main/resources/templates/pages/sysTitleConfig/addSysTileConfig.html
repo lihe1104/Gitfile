@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+        <li class="fa fa-remove"></li>
+    </button>
+    <h5 class="modal-title"></h5>
+</div>
+
+<div class="modal-body">
+    <form id="role_form" name="role_form" class="form-horizontal">
+        <input type="hidden" name="id" th:value="${id}"/>
+        <input type="hidden" name="level_desc" id="level_desc"/>
+        <input type="hidden" name="title_key" id="title_key"/>
+        <div class="box-body">
+            <div class="col-md-10">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">用户级别<span style="color:red">*</span></label>
+                    <div class="col-sm-6">
+                        <select id="editormd-theme-select" class="form-control select2" style="width: 100%;"
+                                name="level_key">
+                            <option value="1">集团领导</option>
+                            <option value="2">集团管理</option>
+                            <option value="3">品牌管理</option>
+                            <option value="4">门店管理</option>
+                            <option value="5">门店员工</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">职位描述<span style="color:red">*</span></label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="title_desc" name="title_desc"
+                               placeholder="请填写角色名称"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">顺序<span style="color:red">*</span></label>
+                    <div class="col-sm-6">
+                        <input type="number" class="form-control" id="pos" name="pos"
+                               placeholder="请填写顺序"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="box-footer text-right">
+            <button type="button" class="btn btn-default" data-btn-type="cancel" data-dismiss="modal">取消</button>
+            <button type="submit" class="btn btn-primary" data-btn-type="save">提交</button>
+        </div>
+    </form>
+</div>
+<script th:inline="javascript">
+    $(".select2").select2();
+    $(".select2").bind("change", function () {
+        var theme = $(this).find("option:selected").text();
+        if (theme === "") {
+            return false;
+        }
+        $("#level_desc").val($.trim(theme));
+    });
+    var form;
+    $(function () {
+        var id = [[${id}]];
+        //初始化表单
+        form = $("#role_form").form();
+        //数据校验
+        $("#role_form").bootstrapValidator({
+            message: '请输入有效值',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            submitHandler: function () {
+                var generator = form.getFormSimpleData();
+                ajaxPost('/sysTitleConfig/save', JSON.stringify(generator), function (data) {
+                    if (data.success) {
+                        swal("保存成功", "提示信息", "success");
+                        modals.hideWin(winId);
+                        initTable();
+                    } else {
+                        swal(data.message, "提示信息", "error");
+                    }
+                });
+            },
+            fields: {
+                "level_key": {
+                    validators: {
+                        notEmpty: {message: '用户级别不能为空'}
+                    }
+                },
+                "title_desc": {
+                    validators: {
+                        notEmpty: {message: '职位描述不能为空'}
+                    }
+                },
+                "pos": {
+                    validators: {
+                        notEmpty: {message: '顺序不能为空'}
+                    }
+                }
+            }
+        });
+        //初始化控件
+        form.initComponent();
+        //编辑回填
+        if (id > 0) {
+            ajaxGet("/sysTitleConfig/get/" + id, null, function (data) {
+                form.initFormData(data);
+            });
+        }
+    });
+
+</script>
+</html>

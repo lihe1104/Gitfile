@@ -1,0 +1,265 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!--<div th:include="common/resource :: #resource_html"></div>-->
+    <!--<link rel="stylesheet" th:href="@{/zTree_v3/css/zTreeStyle/zTreeStyle.css}"/>-->
+    <!--<script type="text/javascript" th:src="@{/zTree_v3/js/jquery.ztree.all.js}"></script>-->
+
+    <title>门店配置</title>
+</head>
+<body>
+<input type="hidden" th:value="${id}" id="idHidden"/>
+
+<section class="content col-lg-6">
+    <div class="box box-info" style="min-width: 420px;">
+        <div class="box-header with-border">
+            <h5 class="box-title" style="color: #0b97c4"> 角色权限配置</h5>
+        </div>
+        <div class="box-body" style="min-height: 363px;max-height: 363px;overflow: auto">
+            <div class="ztree" id="ztreeDiv"></div>
+        </div>
+        <div class="box-footer" style="min-height: 55px">
+            <a href="#" class="btn btn-sm left20" role="button" onclick="add()">
+                <span class=" glyphicon glyphicon-plus" aria-hidden="true" style="margin-right: 5px"></span>保 存</a>
+        </div>
+    </div>
+</section>
+<section class="content col-lg-6">
+
+    <div class="box box-info" style="min-width: 420px;">
+        <div class="box-header with-border">
+            <h5 class="box-title" style="color: #0b97c4"> 角色人员配置</h5>
+        </div>
+        <div class="box-body" style="min-height: 363px;max-height: 363px;overflow: auto">
+            <div class="ztree" id="ztreeDiv2"></div>
+        </div>
+        <div class="box-footer" style="min-height: 55px">
+            <a href="#" class="btn btn-sm left20" role="button" onclick="add2()">
+                <span class=" glyphicon glyphicon-plus" aria-hidden="true" style="margin-right: 5px"></span>保 存</a>
+        </div>
+    </div>
+</section>
+<script>
+    var setting = {
+        data: {
+            simpleData: {
+                enable: true,
+                idKey: "id",
+                pIdKey: "pId",
+                rootPId: 0
+            }
+        },
+      /*  async: {
+            enable: true,
+            url: "/subject/queryByPID",
+            autoParam: ["id", "subType"],
+            dataType: "json"
+        },*/
+        check: {
+            enable: true,
+            chkStyle: "checkbox",
+            chkboxType: {"Y": "s", "N": "s"}
+        }
+
+    };
+    var setting2 = {
+        data: {
+            simpleData: {
+                enable: true,
+                idKey: "id",
+                pIdKey: "groupId",
+                rootPId: 0
+            },
+            key:{
+                name:"name",
+                title:"lName"
+            }
+        },
+          async: {
+              enable: true,
+              url: "/user/queryByGroupId",
+              autoParam: ["id"],
+              otherParam: ["roleId", $('#idHidden').val(), ],
+              dataType: "json"
+          },
+        check: {
+            enable: true,
+            chkStyle: "checkbox",
+            chkboxType: {"Y": "s", "N": "s"}
+        }
+
+    };
+    $.fn.zTree.init($("#ztreeDiv"), setting, getMenuTree());
+    $.fn.zTree.init($("#ztreeDiv2"), setting2, getUserTree());
+
+    function initUserCheck(ids) {
+        var treeObj = $.fn.zTree.getZTreeObj("ztreeDiv2");
+        treeObj.checkAllNodes(false);
+        var length = ids.length;
+      /*  if(length > 0){
+            var node = treeObj.getNodeByParam("id", 0, null);
+            treeObj.checkNode(node, true, false);
+        }
+*/
+        for(var i=0; i<length; i++){
+            console.log(ids[i])
+            var node = treeObj.getNodeByParam("id", ids[i], null);
+            console.log(node)
+            treeObj.checkNode(node, true, false);
+        }
+
+    }
+
+
+    function getUserTree() {
+        var data ="";
+        $.ajax({
+            type:"get",
+            dataType:"json",
+            data:{},
+            //url:"/user/all",
+            url:"/store/all",
+            async:false,
+            success :function (resp) {
+                data =resp.data
+            }
+        })
+        return data;
+    }
+
+    function initMenuCheck(ids) {
+        var treeObj = $.fn.zTree.getZTreeObj("ztreeDiv");
+        treeObj.checkAllNodes(false);
+        var length = ids.length;
+        if(length > 0){
+            var node = treeObj.getNodeByParam("id", 0, null);
+            treeObj.checkNode(node, true, false);
+        }
+
+        for(var i=0; i<length; i++){
+            var node = treeObj.getNodeByParam("id", ids[i], null);
+            treeObj.checkNode(node, true, false);
+        }
+
+    }
+
+    function initUserDatas(){
+        ajaxGet("/user/findRoleId", {"roleId":$('#idHidden').val()}, function (resp) {
+            var ids = [];
+            $.each (resp.data,function (i, t) {
+                ids.push(t.userId);
+            })
+         /*   for(var i=0; i<length; i++){
+                ids.push(data[i]['id']);
+            }*/
+
+            initUserCheck(ids);
+        });
+    }
+
+    function initMenuDatas(){
+        ajaxGet("/resource/findRoleId", {"roleId":$('#idHidden').val()}, function (data) {
+            var length = data.length;
+            var ids = [];
+            for(var i=0; i<length; i++){
+                ids.push(data[i]['id']);
+            }
+
+            initMenuCheck(ids);
+        });
+    }
+    $(function () {
+        initMenuDatas();
+        initUserDatas();
+    })
+
+    function add() {
+        var treeObj = $.fn.zTree.getZTreeObj("ztreeDiv");
+        var nodes = treeObj.getCheckedNodes(true);
+        var id = $('#idHidden').val();
+        var resIds = "";
+        for (var i = 0; i < nodes.length; i++) {
+            resIds+=nodes[i].id+","
+        }
+        $.post("/role/roleResConfig",{"id":id,"resIds":resIds},function (resp) {
+            if (resp.responseCode == 1) {
+                swal("角色与资源的关系配置成功","提示信息","success")
+                $('#container').load("/role/roleConfig?id=" + $('#idHidden').val());
+
+            }
+        })
+    }
+
+
+
+    function getMenuTree() {
+        var root = {
+            id : 0,
+            name : "root",
+            open : true,
+        };
+        ajaxGet("/resource/all", null, function (data) {
+            var length = data.length;
+            var children = [];
+            for (var i = 0; i < length; i++) {
+                var d = data[i];
+                var node = createNode(d);
+                children[i] = node;
+            }
+            root.children = children;
+        });
+        return root;
+    }
+
+    function createNode(d) {
+        var id = d['id'];
+        var pId = d['pId'];
+        var resName = d['resName'];
+        var child = d['child'];
+
+        var node = {
+            open : true,
+            id : id,
+            name : resName,
+            pId : pId,
+        };
+
+        if (child != null) {
+            var length = child.length;
+            if (length > 0) {
+                var children = [];
+                for (var i = 0; i < length; i++) {
+                    children[i] = createNode(child[i]);
+                }
+
+                node.children = children;
+            }
+
+        }
+        return node;
+    }
+
+
+
+    function add2() {
+
+        var treeObj = $.fn.zTree.getZTreeObj("ztreeDiv2");
+        var nodes = treeObj.getCheckedNodes(true);
+        var id = $('#idHidden').val();
+        var userIds = "";
+        for (var i = 0; i < nodes.length; i++) {
+            userIds+=nodes[i].id+","
+        }
+        $.post("/user/roleUserConfig",{"id":id,"userIds":userIds},function (resp) {
+            if (resp.responseCode == 1) {
+                swal("角色与用户的关系配置成功","提示信息","success")
+                $('#container').load("/role/roleConfig?id=" + $('#idHidden').val());
+
+            }
+        })
+    }
+
+</script>
+
+</body>
+</html>

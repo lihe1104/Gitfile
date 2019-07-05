@@ -1,0 +1,364 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!--<div th:include="common/resource :: #resource_html"></div>-->
+    <!--<link rel="stylesheet" th:href="@{/zTree_v3/css/zTreeStyle/zTreeStyle.css}"/>-->
+    <!--<script type="text/javascript" th:src="@{/zTree_v3/js/jquery.ztree.all.js}"></script>-->
+
+    <title>门店配置</title>
+</head>
+<body>
+<div>
+<input type="hidden" th:value="${id}" id="idHidden"/>
+
+<section class="content col-lg-5">
+    <div class="box " style="min-width: 420px">
+        <div class="box-header with-border">
+            <h5 class="box-title" style="color: #0b97c4"> 检查科目列表</h5>
+        </div>
+        <div class="box-body" style="min-height: 354px;">
+            <div class="ztree" id="ztreeDiv"></div>
+        </div>
+        <div class="box-footer" style="min-height: 55px">
+            <a href="#" class="btn btn-sm left20" role="button" onclick="addTreeNode()">
+                <span class=" glyphicon glyphicon-plus" aria-hidden="true" style="margin-right: 5px"></span>添 加</a>
+            <a id="btnEdit" href="#" class="btn btn-sm   left20" role="button" onclick="editTreeNode()">
+                <span class=" glyphicon glyphicon-edit" aria-hidden="true" style="margin-right: 5px"></span>修 改</a>
+            <a href="#" class="btn  btn-sm  left20" role="button" onclick="removeTreeNode()">
+                <span class="glyphicon glyphicon-minus" aria-hidden="true" style="margin-right: 5px"></span>删 除</a>
+        </div>
+    </div>
+</section>
+<section class="col-lg-7 content" id="formDiv">
+    <div class="col-xs-12">
+        <div class="box box-info">
+            <form class="form-horizontal" onsubmit="return false" id="form">
+                <input type="hidden" name="storeId" id="storeId"/>
+                <input type="hidden" id="id"/>
+                <input type="hidden" name="pId" id="pId"/>
+                <div class="box-header with-border ">
+                    <h5 class="box-title box-primary" style="color: #0b97c4">检查配置</h5>
+                </div>
+                <div class="box-body">
+                    <div class="form-group">
+                        <label for="pName" class="col-sm-2 control-label">上级科目:</label>
+                        <div class="col-sm-5">
+                            <input class="form-control" readonly="readonly" id="pName"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="name" class="col-sm-2 control-label">科目名称:</label>
+                        <div class="col-sm-5">
+                            <textarea  class="form-control" rows="2" name="name" id="name"/>
+                        </div>
+                        <label for="name" id="nameError" style="color: red;display: none">* 请输入科目名称</label>
+                    </div>
+                    <div class="form-group">
+                        <!--lable可使用.col-sm-*等方法设置宽度-->
+                        <label for="dessc" class="col-sm-2 control-label">打分描述:</label>
+                        <!--input要在其外包装一个div.col-sm-*来设置宽度-->
+                        <div class="col-sm-5">
+                            <textarea rows="2" class="form-control" name="dessc" id="dessc"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <!--lable可使用.col-sm-*等方法设置宽度-->
+                        <label for="score" class="col-sm-2 control-label">科目分值:</label>
+                        <!--input要在其外包装一个div.col-sm-*来设置宽度-->
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" name="score" id="score"/>
+                        </div>
+                        <label for="name" id="scoreError" style="color: red;display: none">* 请输入数字格式的科目分值</label>
+
+                    </div>
+                    <div class="form-group">
+                        <!--lable可使用.col-sm-*等方法设置宽度-->
+                        <label for="pos" class="col-sm-2 control-label">排序位置:</label>
+                        <!--input要在其外包装一个div.col-sm-*来设置宽度-->
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" name="pos" id="pos"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="minScore" class="col-sm-2 control-label">最低得分:</label>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" name="minScore" id="minScore"/>
+                        </div>
+                        <label for="name" id="minScoreError" style="color: red;display: none">* 请输入数字格式的最低得分</label>
+
+                    </div>
+
+                    <input  type="hidden" name="levell" id="levell"/>
+
+                   <!-- <div class="form-group">
+                        &lt;!&ndash;lable可使用.col-sm-*等方法设置宽度&ndash;&gt;
+                        <label for="level" class="col-sm-2 control-label">科目层级:</label>
+                        &lt;!&ndash;input要在其外包装一个div.col-sm-*来设置宽度&ndash;&gt;
+                        <div class="col-sm-5">
+                            <select class="form-control" name="level" id="level">
+                                <option value=""> &#45;&#45;请选择&#45;&#45;</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                            </select>
+                        </div>
+                    </div>-->
+
+                </div><!-- /.box-body -->
+                <div class="box-footer">
+                    <!--操作按钮放在了div.box-footer中-->
+                    <button class="btn btn-info pull-right" title="请先点击左侧的添加或者修改按钮" disabled   id="saveBtn" a="u" onclick="saveHygiene()">保存</button>
+                </div><!-- /.box-footer -->
+            </form>
+        </div>
+    </div>
+</section>
+<script th:inline="javascript">
+    var setting = {
+        data: {
+            simpleData: {
+                enable: true,
+                idKey: "id",
+                pIdKey: "pId",
+                rootPId: 0
+            }
+        },
+        async: {
+            enable: true,
+            url: "/hygiene/queryByPID",
+            autoParam: ["id"],
+            dataType: "json"
+        },
+        check: {
+            enable: true,
+            chkStyle: "checkbox",
+            chkboxType: {"Y": "s", "N": "s"}
+        }
+
+    };
+
+
+    $(function () {
+        var id = $('#idHidden').val()
+        $.get("/hygiene/getHygiene", {"id": id}, function (resp) {
+            if (resp.responseCode != 1) {
+                swal('提示信息', resp.errMessage, "warning")
+                return
+            }
+            zTreeObj = $.fn.zTree.init($("#ztreeDiv"), setting, resp.data);
+        })
+
+
+    })
+
+    function addTreeNode() {
+        $('#saveBtn').removeAttr("disabled");
+        $('#saveBtn').removeAttr("title");
+        var treeObj = $.fn.zTree.getZTreeObj("ztreeDiv");
+        var nodes = treeObj.getCheckedNodes(true);
+        $('#formDiv').hide(500);
+
+        $('#formDiv').show(500);
+        var inputs = $('#form input');
+        $.each(inputs, function (i, t) {
+            $(t).val('');
+        })
+        var textareas = $('#form textarea');
+        $.each(textareas, function (i, t) {
+            $(t).val('');
+        })
+        if (nodes.length < 1) {
+            $('#pId').val(0)
+            $('#levell').val(1)
+        } else {
+            $('#pId').val(nodes[0].id)
+            $('#pName').val(nodes[0].name)
+            var i =nodes[0].levell
+            if (i == 1) {
+                $('#levell').val(2);
+            }else if (i == 2) {
+                $('#levell').val(3);
+
+            }
+        }
+        var node = treeObj.getNodeByTId("tree_1");
+
+        $('#id').removeAttr("name");
+        if(node !== null && node !== undefined && node !== "undefined" && node !== "null" && node !== "" ){
+            $('#storeId').val(node.storeId);
+        }else {
+            $('#storeId').val([[${id}]]);
+        }
+
+
+
+    }
+
+    function editTreeNode() {
+        $('#saveBtn').removeAttr("disabled")
+        $('#saveBtn').removeAttr("title")
+        var treeObj = $.fn.zTree.getZTreeObj("ztreeDiv");
+        var nodes = treeObj.getCheckedNodes(true);
+        if (nodes.length != 1) {
+            swal("提示信息", "请选择一条记录进行新增操作。", "warning");
+            return;
+        }
+        $('#formDiv').hide(500)
+
+        $('#formDiv').show(500)
+        var inputs = $('#form input');
+        $.each(inputs, function (i, t) {
+            $(t).val('');
+        })
+        var parentNode = nodes[0].getParentNode();
+        $('#pId').val(nodes[0].pId)
+        if (parentNode != null || parentNode != undefined) {
+            $('#pName').val(parentNode.name)
+        }
+        $('#id').val(nodes[0].id)
+        $('#id').attr("name", "id")
+        $('#storeId').val(nodes[0].storeId)
+        $('#name').val((nodes[0]).name)
+        $('#dessc').val((nodes[0]).dessc)
+        $('#score').val((nodes[0]).score)
+        $('#pos').val((nodes[0]).pos)
+        var levell = nodes[0].levell
+        $('#level option').each(function () {
+            var v = $(this).val();
+            if (v ==levell)  {
+                $(this).attr("selected","true")
+            }
+        })
+        $('#minScore').val(nodes[0].minScore)
+    }
+
+    function saveHygiene() {
+
+        var pIdV=$('#pId').val();
+        if (pIdV == '' || pIdV == undefined) {
+            swal("请选择一条数据进行操作","提示信息","warning");
+        }
+        if ($('#name').val() == '') {
+            $('#nameError').show()
+            return
+        }else {
+            $('#nameError').hide()
+
+        }
+        var regPos = /^\d+(\.\d+)?$/;
+        var score = $('#score').val()
+        if (score==''|| !regPos.test(score)) {
+            $('#scoreError').show()
+            return;
+        }else {
+            $('#scoreError').hide()
+        }
+
+        var minScore = $('#minScore').val();
+        if (minScore == '' || !regPos.test(minScore)) {
+            $('#minScoreError').show()
+            return;
+        }else {
+            $('#minScoreError').hide()
+        }
+
+        $.ajax({
+            type: "post",
+            url: "/hygiene/save",
+            async: false,
+            dataType: "json",
+            data: $('#form').serialize(),
+            success: function (resp) {
+                if (resp.responseCode == 1) {
+                    swal('提示信息', '保存成功', 'success')
+                    var treeObj = $.fn.zTree.getZTreeObj("ztreeDiv");
+                    var node = treeObj.getNodesByParam("id", $('#pId').val(), null)
+                    if (node.length > 0) {
+                        node[0].isParent=true;
+                        treeObj.reAsyncChildNodes(node[0], "refresh");
+                    }else {
+                        $('#container').load("/store/storeConfig?id=" +  $('#storeId').val());
+                    }
+                    var inputs = $('#form input');
+                    $.each(inputs, function (i, t) {
+                        $(t).val('');
+                    })
+                    var textarea = $('#form textarea');
+                    $.each(textarea, function (i, t) {
+                        $(t).val('');
+                    })
+                }
+            }
+        })
+    }
+
+    function removeTreeNode() {
+        var treeObj = $.fn.zTree.getZTreeObj("ztreeDiv");
+        var nodes = treeObj.getCheckedNodes(true);
+        if (nodes.length < 1) {
+            swal("请至少选择一条记录","提示信息",  "warning");
+            return;
+        }
+        for (var i = 0; i < nodes.length; i++) {
+            var childrens =nodes[i].children
+            if (childrens != undefined) {
+                if (childrens.length > 0) {
+                    for (var j = 0; j < childrens.length; j++) {
+                        if (!childrens[j].checked){
+                            swal (nodes[i].name+"节点下的"+childrens[j].name+"未选择，无法进行删除操作","提示信息","warning")
+                            return
+                        }
+                    }
+                }
+            }
+
+        }
+
+        swal({
+                title: "确定删除吗？",
+                text: "你将无法恢复该数据！",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "确定删除！",
+                cancelButtonText: "取消删除！",
+                closeOnConfirm: false,
+                closeOnCancel: false
+            },
+            function (isConfirm) {
+                if (isConfirm) {
+                    var treeObj = $.fn.zTree.getZTreeObj("ztreeDiv");
+                    var nodes = treeObj.getCheckedNodes(true);
+                    var ids = "";
+                    var storeId = nodes[0].storeId;
+                    $.each(nodes, function (i, t) {
+                        ids += t.id + ","
+                    })
+                    $.ajax({
+                        type: "post",
+                        dataType: "json",
+                        data: {"ids": ids},
+                        url: "/hygiene/delete",
+                        success: function (resp) {
+                            if (resp.responseCode != 1) {
+                                swal("提示信息！", resp.errMessage,
+                                    "warning");
+                            } else {
+                                $('#container').load("/store/storeConfig?id=" + storeId, function () {
+                                    swal("提示信息", "删除成功", "success");
+                                });
+
+                            }
+                        }
+                    })
+
+                } else {
+                    swal("取消！", "提示信息",
+                        "success");
+                }
+            });
+    }
+</script>
+</div>
+</body>
+</html>

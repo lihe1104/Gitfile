@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+        <li class="fa fa-remove"></li>
+    </button>
+    <h5 class="modal-title"></h5>
+</div>
+
+<div class="modal-body">
+    <form id="role_form" name="role_form" class="form-horizontal">
+        <input type="hidden" name="id" th:value="${id}"/>
+        <div class="box-body">
+            <div class="col-md-10">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">名称<span style="color:red">*</span></label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="name" name="name"
+                               placeholder="请填写名称"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">企业logo<span style="color:red"></span></label>
+                    <div class="col-sm-6">
+                        <input type="file" name="file" class="myfile"/>
+                        <input type="hidden" name="url" id="url" class="myfile"/>
+                        <!--<input type="text" class="form-control" id="url" name="url"-->
+                        <!--placeholder="请填写企业logo路径"/>-->
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">备注<span style="color:red">*</span></label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="remark" name="remark"
+                               placeholder="请填写备注"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="box-footer text-right">
+            <button type="button" class="btn btn-default" data-btn-type="cancel" data-dismiss="modal">取消</button>
+            <button type="submit" class="btn btn-primary" data-btn-type="save">提交</button>
+        </div>
+    </form>
+</div>
+<script th:inline="javascript">
+    var form;
+    $(function () {
+        var id = [[${id}]];
+        //初始化表单
+        form = $("#role_form").form();
+        //数据校验
+        $("#role_form").bootstrapValidator({
+            message: '请输入有效值',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            }, submitHandler: function () {
+                var url = $("#url").val();
+                var generator = form.getFormSimpleData();
+                swal({
+                        title: "请确认图片已经上传完成？",
+                        text: "提示信息！",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "确定！",
+                        cancelButtonText: "取消！",
+                        closeOnConfirm: false,
+                        closeOnCancel: false
+                    },
+                    function (isConfirm) {
+                        if (isConfirm && url != "") {
+                            ajaxPost('/sysMember/save', JSON.stringify(generator), function (data) {
+                                if (data.success) {
+                                    swal("上传成功", "提示信息", "success");
+                                    $('#dataTable').initTableData({"url": "/sysMember/list", "data": {"size": 10}});
+                                    modals.hideWin(winId);
+                                } else {
+                                    swal(data.message, "提示信息", "error");
+                                }
+                            });
+                        } else {
+                            swal("请等待图片上传状态完成,在点击保存按钮", "提示信息", "warning");
+                        }
+                    });
+            },
+            fields: {
+                "name": {
+                    validators: {
+                        notEmpty: {message: '名称不能为空'}
+                    }
+                },
+                // "url": {
+                //     validators: {
+                //         notEmpty: {message: '企业logo不能为空'}
+                //     },
+                //     file: {
+                //         message: '请重新选择企业logo'
+                //     }
+                // },
+                "remark": {
+                    validators: {
+                        notEmpty: {message: '备注不能为空'}
+                    }
+                }
+            }
+        });
+        //初始化控件
+        form.initComponent();
+        //编辑回填
+        if (id > 0) {
+            ajaxGet("/sysMember/get/" + id, null, function (data) {
+                form.initFormData(data);
+            });
+        }
+        var val = $("#url").val();
+        if (val !== undefined && val !== null && val !== "") {
+                $.ajax({
+                    type: 'post',
+                    async: false,
+                    url: "/sysMember/getUrl",
+                    data: {
+                        name: val
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.success) {
+                            initFileInput(data.message)
+                        }else {
+                            initFileInput("");
+                        }
+                    }
+                });
+        } else {
+            initFileInput("");
+        }
+    });
+    function initFileInput(path) {
+        var ter = [];
+        if (path !== "") {
+            ter.push("<img src='"+path+"' class='file-preview-image' style='    width: auto;\n" +
+                "    height: auto;\n" +
+                "    max-width: 100%;\n" +
+                "    max-height: 100%;' >")
+        }
+        $(".myfile").fileinput({
+            language: 'zh',
+            uploadUrl: "/sysMember/upload", //接受请求地址
+            uploadAsync: true, //默认异步上传
+            showUpload: false, //是否显示上传按钮,跟随文本框的那个
+            showRemove: false, //显示移除按钮,跟随文本框的那个
+            showCaption: true,//是否显示标题,就是那个文本框
+            dropZoneEnabled: false,//是否显示拖拽区域，默认不写为true，但是会占用很大区域
+            showClose: false,
+            minFileCount: 1,
+            maxFileCount: 1,
+            initialPreview: ter,
+            overwriteInitial: true,//不覆盖已存在的图片
+            layoutTemplates:{
+                actionUpload:'' ,    //设置为空可去掉上传按钮
+                actionDelete:''  //设置为空可去掉删除按钮
+            },
+            autoReplace:true
+        }).on("filebatchselected", function (event, files) {
+            $(this).fileinput("upload");
+        }).on('fileuploaded', function (event, data, msg) {
+            if (data.response.code === 200) {
+                $("#url").val(data.response.message);
+            } else {
+                swal("上传失败 请重新选择", "提示信息", "error");
+            }
+
+        });
+    }
+
+</script>
+</html>

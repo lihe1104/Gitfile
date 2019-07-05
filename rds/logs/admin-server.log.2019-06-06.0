@@ -1,0 +1,15 @@
+2019-06-06 14:48:09,935 [http-nio-8080-exec-4] INFO  -[StoreServiceImpl.java:42]- 查询门店列表失败。。。
+2019-06-06 14:49:05,769 [http-nio-8080-exec-2] INFO  -[StoreServiceImpl.java:42]- 查询门店列表失败。。。
+2019-06-06 15:00:44,346 [http-nio-8080-exec-1] INFO  -[StoreServiceImpl.java:43]- 查询门店列表失败。。。
+2019-06-06 15:01:42,474 [http-nio-8080-exec-2] INFO  -[StoreServiceImpl.java:43]- 查询门店列表失败。。。
+2019-06-06 15:02:32,966 [http-nio-8080-exec-1] INFO  -[StoreServiceImpl.java:43]- 查询门店列表失败。。。
+2019-06-06 15:03:44,909 [http-nio-8080-exec-1] INFO  -[StoreServiceImpl.java:43]- 查询门店列表失败。。。
+2019-06-06 15:05:08,515 [http-nio-8080-exec-6] INFO  -[StoreServiceImpl.java:43]- 查询门店列表失败。。。
+2019-06-06 15:05:40,808 [http-nio-8080-exec-9] INFO  -[StoreServiceImpl.java:43]- 查询门店列表失败。。。
+2019-06-06 15:10:52,950 [http-nio-8080-exec-8] INFO  -[StoreServiceImpl.java:44]- 查询门店列表失败。。。
+2019-06-06 15:11:15,609 [http-nio-8080-exec-5] INFO  -[StoreServiceImpl.java:44]- 查询门店列表失败。。。
+2019-06-06 15:11:38,437 [http-nio-8080-exec-4] INFO  -[StoreServiceImpl.java:44]- 查询门店列表失败。。。
+2019-06-06 15:13:04,340 [http-nio-8080-exec-1] INFO  -[StoreServiceImpl.java:44]- 查询门店列表失败。。。
+2019-06-06 15:13:14,201 [http-nio-8080-exec-3] INFO  -[StoreServiceImpl.java:44]- 查询门店列表失败。。。
+2019-06-06 15:13:39,796 [http-nio-8080-exec-10] INFO  -[StoreServiceImpl.java:44]- 查询门店列表失败。。。
+2019-06-06 15:15:57,873 [http-nio-8080-exec-8] INFO  -[StoreServiceImpl.java:44]- 查询门店列表失败。。。

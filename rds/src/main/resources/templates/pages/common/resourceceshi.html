@@ -1,0 +1,82 @@
+<!DOCTYPE html >
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<div id="resource_html">
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <!--css-->
+    <!-- Bootstrap 3.3.6 -->
+    <link rel="stylesheet" type="text/css" th:href="@{/admin-lte/bootstrap/css/bootstrap.min.css}"/>
+    <!-- Font Awesome -->
+    <link rel="stylesheet"  type="text/css" th:href="@{/common/libs/font-awesome/css/font-awesome.min.css}"/>
+
+    <!-- AdminLTE Skins. Choose a skin from the css/skins
+         folder instead of downloading all of them to reduce the load. -->
+
+    <link rel="stylesheet" type="text/css" th:href="@{/common/css/base.css}"/>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script type="text/javascript" th:src="@{/common/libs/html5shiv/html5shiv.min.js}"></script>
+    <script  type="text/javascript" th:src="@{/common/libs/respond/respond.min.js}"></script>
+    <![endif]-->
+    <!-- table and edit -->
+    <link rel="stylesheet" type="text/css" th:href="@{/admin-lte/plugins/datatables/dataTables.bootstrap.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/admin-lte/plugins/datatables/select.bootstrap.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/admin-lte/plugins/bootstrap-validator/dist/css/bootstrap-validator.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/admin-lte/plugins/iCheck/all.css}"/>
+    <!-- daterangepicker -->
+    <!--<link rel="stylesheet" href="${basePath}/resources/adminlte/plugins/daterangepicker/daterangepicker.css">-->
+    <link rel="stylesheet" type="text/css" th:href="@{/admin-lte/plugins/datepicker/datepicker3.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/admin-lte/plugins/select2/select2.min.css}"/>
+    <!-- treeview -->
+    <link rel="stylesheet" type="text/css" th:href="@{/admin-lte/plugins/bootstrap-treeview/bootstrap-treeview.min.css}" />
+    <!-- Theme style -->
+    <link rel="stylesheet" type="text/css" th:href="@{/admin-lte/dist/css/AdminLTE.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/admin-lte/dist/css/skins/_all-skins.css}"/>
+
+<!--js-->
+    <script type="text/javascript" th:src="@{/admin-lte/plugins/jQuery/jQuery-2.2.0.min.js}"></script>
+    <!--<script th:src="@{/js/login/jquery-3.3.1.min.js}" type="text/javascript"></script>-->
+    <!--JSON2-->
+    <script  type="text/javascript" th:src="@{/common/json/json2.js}"></script>
+    <!-- Bootstrap 3.3.6 -->
+    <script  type="text/javascript" th:src="@{/admin-lte/bootstrap/js/bootstrap.min.js}"></script>
+    <!-- FastClick -->
+    <script type="text/javascript" th:src="@{/admin-lte/plugins/fastclick/fastclick.js}"></script>
+    <!-- AdminLTE App -->
+    <script type="text/javascript" th:src="@{/admin-lte/dist/js/app.min.js}"></script>
+    <script type="text/javascript" th:src="@{/admin-lte/plugins/slimScroll/jquery.slimscroll.min.js}"></script>
+    <!-- dataTable -->
+    <script type="text/javascript" th:src="@{/admin-lte/plugins/datatables/jquery.dataTables.js}"></script>
+    <script	type="text/javascript" th:src="@{/admin-lte/plugins/datatables/dataTables.bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{/common/js/dataTables.js}"></script>
+    <!-- form -->
+    <script type="text/javascript" th:src="@{/admin-lte/plugins/bootstrap-validator/dist/js/bootstrap-validator.js}"></script>
+    <script type="text/javascript" th:src="@{/admin-lte/plugins/iCheck/icheck.min.js}"></script>
+
+    <!--daterangepicker-->
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
+    <script src="${basePath}/resources/adminlte/plugins/daterangepicker/daterangepicker.js"></script>-->
+
+    <script type="text/javascript" th:src="@{/admin-lte/plugins/datepicker/bootstrap-datepicker.js}"></script>
+    <script type="text/javascript" th:src="@{/admin-lte/plugins/datepicker/locales/bootstrap-datepicker.zh-CN.js}"></script>
+    <!-- treeview -->
+    <script type="text/javascript" th:src="@{/admin-lte/plugins/bootstrap-treeview/bootstrap-treeview.min.js}"></script>
+
+    <!-- AdminLTE for demo purposes -->
+    <script type="text/javascript" th:src="@{/admin-lte/dist/js/demo.js}"></script>
+    <!--select2-->
+    <script type="text/javascript" th:src="@{/admin-lte/plugins/select2/select2.full.min.js}"></script>
+
+    <script type="text/javascript" th:src="@{/common/js/base.js}"></script>
+    <script type="text/javascript" th:src="@{/common/js/base-modal.js}"></script>
+    <script type="text/javascript" th:src="@{/common/js/base-form.js}"></script>
+    <script type="text/javascript" th:src="@{/common/js/base-datasource.js}"></script>
+    <script type="text/javascript" th:src="@{/common/js/base-org.js}"></script>
+</div>
+</body>
+</html>

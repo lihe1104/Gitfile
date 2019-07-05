@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!-- Main content -->
+<section class=" content">
+    <div class="col-xs-12">
+        <div class="box box-info">
+            <form class="form-horizontal" onsubmit="return false" id="form">
+                <fieldset>
+                    <input type="hidden" id="id" name="id" th:value="${id}"/>
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">媒体名称</label>
+                            <div class="col-md-10">
+                                <select id="editormd-theme-select" class="form-control select2" name="info_id"
+                                        style="width: 70%">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">集团列表</label>
+                            <div class="col-md-10">
+                                <input id="store_id" name="store_id" type="hidden" class="form-control">
+                                <input id="areaSel" name="areaSel" style="width: 70%;cursor: pointer;" value=""
+                                       type="text" readonly class="form-control"
+                                       onclick="showMenu(); return false;"/>
+                                <div id="menuContent" class="menuContent" style="width: 70%; display:none;">
+                                    <!--<input type="text" class="form-control"
+                                           oninput="AutoMatch(this)" onpropertychange="AutoMatch(this)">-->
+                                    <ul id="areaTree" class="ztree"
+                                        style="min-height: 363px;width: 70%;margin-top: 0px;"></ul>
+                                    <ul id="seachezTree" class="ztree"
+                                        style="margin-top:0; width:0px; display:none;"></ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">职位名称</label>
+                            <div class="col-md-8">
+                                <input type="hidden" name="title_id" id="title_id" class="form-control" value=""
+                                       readonly/>
+                                <div class="col-xs-12">
+                                    <div class="dataTables_wrapper form-inline dt-bootstrap">
+                                        <div class="row">
+
+                                            <table id="dataTable"
+                                                   class="table table-hover table-striped table-bordered text-center">
+                                                <thead>
+                                                <tr class="info">
+                                                    <th id="firstCell" field="checkbox"><input type="checkbox"
+                                                                                               name="checkAll"
+                                                                                               id="checkAll"
+                                                                                               value=""/></th>
+                                                    <th field="level_desc">用户级别名称</th>
+                                                    <th field="title_desc">职位描述</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <td colspan='3'>请选择门店。。。</td>
+                                                </tr>
+                                                <!--<tr  th:each="sysRole : ${sysRolePage.getContent()}">-->
+                                                <!--<td class="text-center" ><input type="checkbox" name="myCheckBox" th:value="${sysRole.roleId}" value="2"></td>-->
+                                                <!--<td th:text="${num}">1</td>-->
+                                                <!--<td th:text="${user.userName}">admin</td>-->
+                                                <!--<td th:text="${user.name}">超级管理员</td>-->
+                                                <!--<td><a href="#" th:href="@{/customer/toEdit/{id}/{pageNo}(id=${customer.customerId},pageNo=${pageIndex})}" th:text="${user.tel}">详情</a></td>-->
+                                                <!--<td th:text="${user.createTime}">2018-01-01 13:00</td>-->
+                                                <!--<td th:text="${user.expiredDate}">2019-01-01</td>-->
+                                                <!--<td th:text="${user.state}">正常</td>-->
+                                                <!--</tr>-->
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="row" id="pageDiv"></div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </fieldset>
+                <div class="box-footer text-right">
+                    <button type="button" class="btn btn-default" data-btn-type="cancel" onclick="back()"
+                            data-dismiss="modal">返回
+                    </button>
+                    <button type="submit" class="btn btn-primary" data-btn-type="save">提交</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+<!--<link rel="stylesheet" th:href="@{/zTree_v3/css/zTreeStyle/zTreeStyle.css}"/>-->
+<!--<script type="text/javascript" th:src="@{/zTree_v3/js/jquery.ztree.all.js}"></script>-->
+<script th:inline="javascript">
+    var chk_value = [];
+    // Array.prototype.indexOf = function (val) {
+    //     for (var i = 0; i < this.length; i++) {
+    //         if (this[i] == val) return i;
+    //     }
+    //     return -1;
+    // };
+    function checkboxChange() {
+        var checked = $(this).prop('checked');
+        let parse = JSON.parse($(this).val());
+        if (checked) {
+            if (!chk_value.in_array(parse.id)) {
+                chk_value.push(parse.id);
+            }
+        } else {
+            if (chk_value.in_array(parse.id)) {
+                chk_value.remove(parse.id);
+            }
+        }
+        // let parse = JSON.parse($(this).val());
+    }
+    function checkboxClick() {
+        var checked = $(this).find("input[type='checkbox']")[0].checked;
+        let parse = JSON.parse($(this).find("input[type='checkbox']").val());
+        if (!checked) {
+            if (!chk_value.in_array(parse.id)) {
+                chk_value.push(parse.id);
+            }
+        } else {
+            if (chk_value.in_array(parse.id)) {
+                chk_value.remove(parse.id);
+            }
+        }
+        // let parse = JSON.parse($(this).val());
+    }
+    $("#dataTable thead ").find("#checkAll").change(function () {
+        $("#dataTable tbody tr input[type='checkbox']").each(function () {
+            var checked = $(this).prop('checked');
+            let parse = JSON.parse($(this).val());
+            if (checked) {
+                if (!chk_value.in_array(parse.id)) {
+                    chk_value.push(parse.id);
+                }
+            } else {
+                if (chk_value.in_array(parse.id)) {
+                    chk_value.remove(parse.id);
+                }
+            }
+        });
+    });
+    $("#dataTable tbody").bind('DOMNodeInserted', function (e) {
+        // alert('element now contains: ' + $(e.target).html());
+        $(this).find("tr").unbind("click", checkboxClick).bind("click", checkboxClick);
+        $(this).find("tr input[type='checkbox']").unbind("change", checkboxChange).bind("change", checkboxChange);
+        for (var i=0; i< chk_value.length; i++) {
+            $('table tbody tr').find('input[type="checkbox"]').each(function () {
+                let parse = JSON.parse($(this).val());
+                if (parse.id === chk_value[i]) {
+                    $(this).attr("checked", "checked");
+                }
+            });
+        }
+    });
+
+    // $("#dataTable tbody input[type='checkbox']").change(function () {
+    // });
+
+    var id = [[${id}]];
+
+    ajaxPost("/media/findByMType", JSON.stringify({"mType":"2"}), function (data) {
+        themeSelect("editormd-theme-select", data, "");
+    });
+
+    function themeSelect(id, themes, lsKey) {
+        var select = $("#" + id);
+        for (var i = 0; i <themes.length ; i++) {
+            var theme = themes[i];
+            var selected = (lsKey === theme.name) ? " selected='selected'" : "";
+            select.append("<option value=\"" + theme.id + "\"" + selected + " >" + theme.name + "</option>");
+        }
+        return select;
+    }
+
+    // ajaxPost("/store/all", null, function (data) {
+    //     themeSelect1("select2tree", data, "",themeSelectCallback);
+    // });
+    // function createNode(d, s) {
+    //     var str = "";
+    //     for (var i in d) {
+    //         var theme = d[i];
+    //         var selected = "";
+    //         var parent = "";
+    //         if (i===0){
+    //             selected ="  selected='selected'";
+    //         }
+    //         if(theme.level !== 0){
+    //             parent = "parent = '"+theme.pId+"'"
+    //         }
+    //         str += "<option value='" + theme.id + "' "+parent+" level='"+theme.level+"' >" + s + theme.orgFullName + "</option>";
+    //         var child = d[i].child;
+    //         if (child != null) {
+    //             var length = child.length;
+    //             if (length > 0) {
+    //                 for (var i = 0; i < length; i++) {
+    //                     //+="&nbsp;&nbsp;&nbsp;"
+    //                     str += createNode(child,s);
+    //                 }
+    //
+    //             }
+    //         }
+    //     }
+    //     return str;
+    // }
+
+
+    function back() {
+        $('#container').load("/mediaConfig");
+    }
+
+    //初始化表单
+    //数据校验
+    $("#form").bootstrapValidator({
+        message: '请输入有效值',
+
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        submitHandler: function () {
+            var data = {};
+            var generator = form.getFormSimpleData();
+            data.id = generator.id;
+            data.info_id = generator.info_id;
+            data.store_id = generator.store_id;
+            // $('table tbody tr').find('input[type="checkbox"]:checked').each(function () {
+            //     let parse = JSON.parse($(this).val());
+            //     chk_value.push(parse.id);
+            // });
+            var chk_value_length = chk_value.length;
+            var title_ids;
+            // if(generator.store_id!==undefined && generator.store_id!==null){
+            //     swal("请选择门店名称", "提示信息", "warning");
+            //     return false;
+            // }else if (chk_value_length < 1) {
+            //
+            //     return false;
+            // }
+            if (chk_value_length > 0) {
+                title_ids = chk_value.join(",");
+            }
+            data.title_ids = title_ids;
+            var issubmit = false;
+            if (chk_value_length > 0 && generator.store_id !== "" && generator.store_id !== undefined && generator.store_id !== null) {
+                issubmit = true;
+            }
+            if (issubmit) {
+                $.ajax({
+                    type: 'post',
+                    async: false,
+                    url: "/mediaConfig/save",
+                    data: data,
+                    dataType: 'json',
+                    // headers: headers,
+                    // contentType : 'application/json',
+                    success: function (data, status) {
+                        if (data.success) {
+                            swal('保存成功', '提示信息', 'success');
+                            back();
+                        } else {
+                            swal(data.message, '提示信息', 'success');
+                        }
+                    },
+                    error: function (err, err1, err2) {
+                        modals.error({
+                            text: JSON.stringify(err) + '<br/>err1:' + JSON.stringify(err1) + '<br/>err2:' + JSON.stringify(err2),
+                            large: true
+                        });
+                        return;
+                    }
+                });
+            } else {
+                swal("请选择职工信息", "提示信息", "warning");
+            }
+
+            // $.ajax({
+            //     type:"get",
+            //     dataType:"json",
+            //     data:JSON.stringify(data),
+            //     url :"/mediaConfig/save",
+            //     async:false,
+            //     success:function(resp){
+            //     }
+            // })
+        },
+        fields: {
+            "info_id": {
+                validators: {
+                    notEmpty: {message: '请选择媒体'}
+                }
+            }
+            // ,
+            // "areaSel": {
+            //     trigger:"change",
+            //     validators: {
+            //         notEmpty: {message: '请选择门店'}
+            //     }
+            // }
+        }
+    });
+    //初始化表单
+    var form = $("#form").form();
+    //初始化控件
+    form.initComponent();
+
+    //初始化控件
+    $(function () {
+        $(".select2").select2();
+        // $(".select2tree").select2();
+        // $("#editormd-theme-select1").select2tree();
+    });
+    var zNodes;
+    var store_id;
+    $(function () {
+        ajaxPost("/store/all", null, function (data) {
+            //传入所需要的id属性名
+            zNodes = createTree(data);
+        });
+        //初始化下拉树
+        $.fn.zTree.init($("#areaTree"), setting, zNodes);
+        $.fn.zTree.init($("#seachezTree"), setting, zNodes);
+        //编辑回填
+        if (id > 0) {
+            ajaxGet("/mediaConfig/get/" + id, null, function (data) {
+                form.initFormData(data);
+                store_id = data.store_id;
+                if (store_id !== null && store_id !== undefined) {
+                    var treeObj = $.fn.zTree.getZTreeObj("areaTree");
+                    var node = treeObj.getNodeByParam("id", store_id, null);
+                    if (node) {
+                        //触发默认数据的click事件
+                        $("#" + node.tId + "_a").click();//触发ztree点击事件
+                    }
+                }
+            });
+
+        }
+    });
+
+</script>
+<script th:src="@{/js/common/treeDiv.js}" type="text/javascript"></script>
+</html>

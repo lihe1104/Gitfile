@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<section class="content">
+    <div class="col-xs-12">
+        <div class="box box-info">
+            <div class="box-body">
+                <div class="dataTables_wrapper form-inline dt-bootstrap">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="input-group">
+                                <a href="javascript:void (0)" class="btn   left20 add" role="button">
+                                <span class=" glyphicon glyphicon-plus" aria-hidden="true"
+                                      style="margin-right: 5px"></span>添
+                                    加</a>
+                                <a id="btnEdit" href="javascript:void (0)" class="btn   left20 edit" role="button">
+                                <span class=" glyphicon glyphicon-edit" aria-hidden="true"
+                                      style="margin-right: 5px"></span>修
+                                    改</a>
+                                <a href="javascript:void (0)" class="btn   left20 delete" role="button">
+                                <span class="glyphicon glyphicon-minus" aria-hidden="true"
+                                      style="margin-right: 5px"></span>删
+                                    除</a>
+                            </div>
+                            <table id="dataTable" class="table table-hover table-striped table-bordered text-center">
+                                <thead>
+                                <tr class="info">
+                                    <th id="firstCell" field="checkbox"><input type="checkbox" name="checkAll" id="checkAll"
+                                                                               value=""/></th>
+                                    <th field="level_desc">用户级别名称</th>
+                                    <th field="title_desc">职位描述</th>
+                                    <th field="pos">顺序</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td colspan="7">
+                                        <span class="box-title">数据加载中....</span>
+                                        <i class="fa fa-refresh fa-spin"></i>
+                                    </td>
+                                </tr>
+                                <!--<tr  th:each="sysRole : ${sysRolePage.getContent()}">-->
+                                <!--<td class="text-center" ><input type="checkbox" name="myCheckBox" th:value="${sysRole.roleId}" value="2"></td>-->
+                                <!--<td th:text="${num}">1</td>-->
+                                <!--<td th:text="${user.userName}">admin</td>-->
+                                <!--<td th:text="${user.name}">超级管理员</td>-->
+                                <!--<td><a href="#" th:href="@{/customer/toEdit/{id}/{pageNo}(id=${customer.customerId},pageNo=${pageIndex})}" th:text="${user.tel}">详情</a></td>-->
+                                <!--<td th:text="${user.createTime}">2018-01-01 13:00</td>-->
+                                <!--<td th:text="${user.expiredDate}">2019-01-01</td>-->
+                                <!--<td th:text="${user.state}">正常</td>-->
+                                <!--</tr>-->
+
+                                </tbody>
+                            </table>
+                        </div>
+
+
+
+                    </div>
+                    <div class="row" id="pageDiv"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+<script type="text/javascript">
+    var winId = "sysTileConfigWin";
+    $(function () {
+        initTable();
+
+    });
+
+    function initTable() {
+        $('#dataTable').initTableData({"url": "/sysTitleConfig/list", "data": {"size": 10}});
+    }
+
+    $(".add").click(function () {
+        modals.openWin({
+            winId: winId,
+            title: '新增身份信息',
+            width: '600px',
+            url: "/sysTitleConfig/edit"
+        });
+    });
+    $(".edit").click(function () {
+        var chk_value = [];
+        $('table tbody tr').find('input[type="checkbox"]:checked').each(function () {
+            let parse = JSON.parse($(this).val());
+            chk_value.push(parse.id);
+        });
+
+        var chk_value_length = chk_value.length;
+        if (chk_value_length > 0) {
+            if (chk_value_length === 1) {
+                var id = chk_value.join(",");
+                modals.openWin({
+                    winId: winId,
+                    title: '编辑角色',
+                    width: '600px',
+                    url: "/sysTitleConfig/edit?id=" + id
+                });
+            } else {
+                swal("请选择一条记录..", "提示信息", "warning");
+            }
+        } else {
+            swal("请选择一条记录..", "提示信息", "warning");
+        }
+    });
+    $(".delete").click(function () {
+        var chk_value = [];
+        $('table tbody tr').find('input[type="checkbox"]:checked').each(function () {
+            let parse = JSON.parse($(this).val());
+            chk_value.push(parse.id);
+        });
+        var chk_value_length = chk_value.length;
+        if (chk_value_length > 0) {
+            swal({
+                    title: "确定删除吗？",
+                    text: "你将无法恢复该数据！",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "确定删除！",
+                    cancelButtonText: "取消删除！",
+                    closeOnConfirm: false,
+                    closeOnCancel: false
+                },
+                function (isConfirm) {
+                    if (isConfirm) {
+                        var ids = chk_value.join(",");
+                        ajaxGet('/sysTitleConfig/delete', {"ids": ids}, function (data) {
+                            if (data.success) {
+                                swal("删除成功", "提示信息", "success");
+                                modals.hideWin(winId);
+                                initTable();
+                            } else {
+                                swal("系统异常,请联系维护人员", "提示信息", "error");
+                            }
+                        });
+                    } else {
+                        swal("提示信息", "取消！",
+                            "success");
+                    }
+                });
+
+        } else {
+            swal("请至少选择一条数据进行删除操作", "提示信息", "warning");
+            return
+        }
+    });
+    //数据校验
+    // $("#role_form_list").bootstrapValidator({
+    //     submitHandler: function () {
+    //         var name = $("#role_form_list").find("input[name='role_name_Zh']").val();
+    //         findList(name,1,10)
+    //     }
+    // });
+</script>
+
+</html>

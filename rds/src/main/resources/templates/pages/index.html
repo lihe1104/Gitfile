@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:include="common/resource :: #resource_html"></div>
+    <title>餐饮小智后台管理系统</title>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+    <header class="main-header">
+
+        <a href="javascript:void(0)" class="logo">
+            <!-- mini logo for sidebar mini 50x50 pixels -->
+            <span class="logo-mini">展开</span>
+            <!-- logo for regular state and mobile devices -->
+            <span class="logo-lg">餐饮小智</span>
+        </a>
+        <nav class="navbar navbar-static-top">
+            <!-- Sidebar toggle button-->
+            <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                <span class="sr-only">Toggle navigation</span>
+            </a>
+
+            <div class="navbar-custom-menu">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown user user-menu">
+                        <a href="javascript:void(0)" class="dropdown-toggle" onclick="goLogin()">
+                            <span class="hidden-xs">注销</span>
+                        </a>
+                    </li>
+                    <li class="dropdown user user-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <img th:src="@{/images/img/1231.jpg}" class="user-image" alt="User Image"/>
+                            <span class="hidden-xs usern"></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+
+    <aside class="main-sidebar">
+        <section class="sidebar">
+            <form action="#" method="get" class="sidebar-form">
+            </form>
+
+            <ul class="sidebar-menu" data-widget="tree" id ="menu">
+                <li class="header">菜单列表</li>
+            </ul>
+        </section>
+
+    </aside>
+    <div class="content-wrapper">
+
+        <section class="content-header">
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+                <li class="active" id="listTitle">首页</li>
+            </ol>
+        </section>
+
+        <section  class="content">
+            <div id="container" class="row ">
+                <section class="content">
+                    <div class="box box-info">
+                        <img src="/images/222.jpg" style="width: 100%;max-height: 460px;min-height: 460px">
+                    </div>
+                </section>
+            </div>
+        </section>
+       
+    </div>
+  <footer class="main-footer">
+		    <div class="pull-right hidden-xs">
+		      <b>Version</b> 1.0.0
+		    </div>
+		    <strong>Copyright &copy; 2019-2025 <a href="#">旭东企程</a>.</strong> All rights
+		    reserved.
+		 </footer>
+    <script th:src="@{/js/my/login.js}" type="text/javascript"></script>
+    <script th:src="@{/js/my/index.js}" type="text/javascript"></script>
+</div>
+<script>
+    $(function () {
+        $.get("/login/sysUser",{},function (resp) {
+            $('.usern').each(function () {
+                $(this).html(resp.name)
+            })
+        })
+    })
+	function goLogin() {
+	    swal({
+	            title: "提示信息",
+	            text: "确认退出该账户吗？",
+	            type: "warning",
+	            showCancelButton: true,
+	            confirmButtonColor: "#DD6B55",
+	            confirmButtonText: "确定！",
+	            cancelButtonText: "取消！",
+	            closeOnConfirm: false,
+	            closeOnCancel: false
+	        },
+	        function (isConfirm) {
+	            if (isConfirm) {
+	                window.location.href="/login.html"
+	            } else {
+	                swal("取消！", "提示信息",
+	                    "success");
+	            }
+	        });
+	}
+</script>
+</body>
+</html>

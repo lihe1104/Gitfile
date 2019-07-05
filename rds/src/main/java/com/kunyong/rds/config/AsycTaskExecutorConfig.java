@@ -1,0 +1,36 @@
+package com.kunyong.rds.config;
+
+import org.springframework.boot.web.servlet.MultipartConfigFactory;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+
+import javax.servlet.MultipartConfigElement;
+
+/**
+ * 线程池配置、启用异步
+ * 
+ * @author 贺
+ *
+ */
+@EnableAsync(proxyTargetClass = true)
+@Configuration
+public class AsycTaskExecutorConfig {
+
+	@Bean
+	public TaskExecutor taskExecutor() {
+		ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor ();
+		taskExecutor.setCorePoolSize(50);
+		taskExecutor.setMaxPoolSize(100);
+
+		return taskExecutor;
+	}
+	@Bean
+	public MultipartConfigElement multipartConfigElement() {
+		MultipartConfigFactory factory = new MultipartConfigFactory();
+		factory.setMaxFileSize(1024L * 1024L * 100);
+		return factory.createMultipartConfig();
+	}
+}

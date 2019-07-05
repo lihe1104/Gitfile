@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!-- Content Header (Page header) -->
+<script type="text/javascript" th:src="@{/common/js/ztree-menu.js}"></script>
+<section class="content-header">
+    <h1>
+        角色配置
+        <small>列表</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="/"><i class="fa fa-dashboard"></i> 首页</a></li>
+        <li><a href="#">系统管理</a></li>
+        <li class="active">角色配置</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <form class="form-horizontal" onsubmit="return false" id="form">
+            <fieldset>
+                <input type="hidden" id="id" name="id" value=""/>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">角色名称</label>
+                    <div class="col-md-10">
+                        <select id="editormd-theme-select" class="form-control select2" name="role_name">
+                        </select>
+                        <!--<input class="form-control" placeholder="角色名称" type="text" name="role_name" id="role_name"-->
+                        <!--data-bv-notempty="true"-->
+                        <!--data-bv-notempty-message="角色 不能为空" />-->
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-2 control-label">角色中文名称</label>
+                    <div class="col-md-10">
+                        <input class="form-control" placeholder="角色中文名称" type="text" name="role_name_Zh"
+                               readonly
+                               id="role_name_Zh"
+                               data-bv-notempty="true"
+                               />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">权限</label>
+                    <div class="col-md-10">
+                        <ul id="treeDemo" class="ztree"></ul>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <div class="row" align="center">
+                        <div class="col-md-12">
+                            <!--<button class="btn btn-primary" onclick="location.href='roleList.html'">返回</button>-->
+                            <button class="btn btn-primary" type="submit" onclick="add()">
+                                <i class="fa fa-save"></i> 保存
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </fieldset>
+        </form>
+    </div>
+</section>
+<script>
+    $(function () {
+        let $select = $("select option:selected");
+        $("#id").val($select.attr("roleId"));
+        $("#role_name_Zh").attr("role_name_Zh");
+        initData();
+    });
+    $(".select2").select2();
+    ajaxPost("/role/all", null, function (data) {
+        themeSelect("editormd-theme-select", data, "role_admin", themeSelectCallback);
+    });
+    function themeSelectCallback($this, theme) {
+        var roleId = $($this).find("option:selected").attr("roleId");
+        var role_name_Zh = $($this).find("option:selected").attr("role_name_Zh");
+        $("#id").val(roleId);
+        $("#role_name_Zh").val(role_name_Zh);
+        initData();
+    }
+
+    $.fn.zTree.init($("#treeDemo"), getSettting(), getMenuTree());
+    function initData() {
+        var id = $("#id").val();
+        if (id != "") {
+            ajaxGet('/role/get/' + id, null, function (data) {
+                $("#role_name_Zh").val(data.role_name_Zh);
+            });
+            initMenuDatas(id);
+        }
+    }
+
+    function initMenuDatas(roleId){
+        ajaxGet("/resource/findRoleId", {"roleId":roleId}, function (data) {
+            var length = data.length;
+            var ids = [];
+            for(var i=0; i<length; i++){
+                ids.push(data[i]['id']);
+            }
+
+            initMenuCheck(ids);
+        });
+    }
+    function add() {
+        var formdata = $("#form").serializeObject();
+        formdata.permissionIds = getCheckedMenuIds();
+        ajaxPost("/resource/saveResRoleLink", JSON.stringify(formdata), function (data) {
+            if (data.success) {
+                swal("保存成功！", '提示信息', "success");
+            } else {
+                swal(data.message, '提示信息', "error");
+            }
+        });
+    }
+
+    function themeSelect(id, themes, lsKey, callback) {
+        var select = $("#" + id);
+        for (var i in themes) {
+            var theme = themes[i];
+            var selected = (lsKey === theme.role_name) ? " selected='selected'" : "";
+            select.append("<option value=\"" + theme.role_name + "\"" + selected + " roleId = '"+theme.id+"' role_name_Zh = '"+theme.role_name_Zh+"'>" + theme.role_name + "</option>");
+        }
+
+        select.bind("change", function () {
+            var theme = $(this).val();
+            if (theme === "") {
+                return false;
+            }
+            localStorage[lsKey] = theme;
+            callback(select, theme);
+        });
+
+        return select;
+    }
+</script>
+</html>

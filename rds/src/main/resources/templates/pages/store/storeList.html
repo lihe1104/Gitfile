@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!--<div th:include="common/resource :: #resource_html"></div>-->
+    <title>门店列表查询</title>
+</head>
+<body>
+<div>
+
+    <section class="content">
+            <div class="box box-info">
+                <div class="box-body">
+                    <div class="dataTables_wrapper form-inline dt-bootstrap">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <a href="javascript:void(0)" onclick="edit()" class="btn    left20" >
+                                    <span class="glyphicon glyphicon-edit gly"  aria-hidden="true" style="margin-right: 5px;"></span>配 置</a>
+                                <table id="dataTable"
+                                       class="table table-hover table-striped table-bordered text-center">
+                                    <thead>
+                                    <tr class="info">
+                                        <th field="checkbox"><input type="checkbox" name="checkAll" id="checkAll"
+                                                                    value=""/></th>
+                                        <th field="orgFullName">机构全称</th>
+                                        <th field="addr">地址</th>
+                                        <th field="{getText(level)}">级别</th>
+                                        <th field="{getV(status)}">状态</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td colspan="7">
+                                            <span class="box-title">数据加载中....</span>
+                                            <i class="fa fa-refresh fa-spin"></i>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </section>
+</div>
+<script>
+    $(function () {
+            $('#dataTable').initTableData( {"url":"/store/storeList","data":{"size":10}});
+    })
+    function edit() {
+        var ins = $('#dataTable input:checked')
+        if (ins.length!=1){
+            swal('提示信息','请选择一条信息进行配置操作..',"warning")
+            return
+        }
+        var _v =JSON.parse(ins.val())
+        $('#container').load("/store/storeConfig?id="+_v.id);
+    }
+    function getText(e) {
+        if (e == 1) {
+            return "集团";
+        } else if (e == 2) {
+            return "品牌";
+        } else if (e == 3) {
+            return "门店";
+        }
+    }
+    function getV(e) {
+        if (e == 1) {
+            return"签约"
+        }else if(e==2){
+            return "未签约"
+        }else   {
+            return "暂无数据"
+        }
+    }
+</script>
+</body>
+</html>

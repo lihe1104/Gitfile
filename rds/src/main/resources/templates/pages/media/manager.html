@@ -1,0 +1,196 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!--<div th:include="common/resource :: #resource_html"></div>-->
+    <title>多媒体管理</title>
+</head>
+<body>
+<div>
+
+    <!--<section class="content">-->
+    <!--<div class="box box-info ">-->
+    <!--<form class="form-inline">-->
+    <!--<div class="box-body ">-->
+
+    <!--<div class="input-group col-lg-3">-->
+    <!--<div class="input-group-btn">-->
+    <!--<span type="button" class="btn btn-danger">姓名</span>-->
+    <!--</div>-->
+    <!--<input class="form-control col-sm-2"/>-->
+    <!--</div>-->
+    <!--<div class="input-group"></div>-->
+    <!--<div class="input-group"></div>-->
+    <!--<div class="input-group"></div>-->
+    <!--<div class="input-group">-->
+    <!--<div class="input-group-btn">-->
+    <!--<span type="button" class="btn btn-danger">性别</span>-->
+    <!--</div>-->
+    <!--<input class="form-control col-sm-2"/>-->
+    <!--</div>-->
+
+    <!--</div>-->
+    <!--<div class="box-footer" align="center">-->
+    <!--<button type="submit" class="btn btn-info ">查询</button>-->
+    <!--<button type="submit" class="btn btn-info ">重置</button>-->
+    <!--</div>-->
+    <!--</form>-->
+    <!--</div>-->
+    <!--</section>-->
+    <section class="content">
+            <div class="box box-info">
+                <div class="box-body">
+                    <div class="dataTables_wrapper form-inline dt-bootstrap">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <a href="javascript:void (0)" class="btn   left20 add" role="button">
+                                    <span class=" glyphicon glyphicon-plus" aria-hidden="true" style="margin-right: 5px"></span>添 加</a>
+                                <a id="btnEdit" href="javascript:void (0)" class="btn   left20 edit" role="button">
+                                    <span class=" glyphicon glyphicon-edit" aria-hidden="true" style="margin-right: 5px"></span>修 改</a>
+                                <a href="javascript:void (0)" class="btn   left20 delete" role="button">
+                                    <span class="glyphicon glyphicon-minus" aria-hidden="true" style="margin-right: 5px"></span>删 除</a>
+                                <!--<a href="javascript:void (0)" class="btn   left20" role="button">-->
+                                    <!--<span class="glyphicon glyphicon-export" aria-hidden="true" style="margin-right: 5px"></span>导 入</a>-->
+                                <!--<a href="javascript:void(0)" onclick="edit()" class="btn    left20" >-->
+                                    <!--<span class="glyphicon glyphicon-edit gly"  aria-hidden="true" style="margin-right: 5px;"></span>配 置</a>-->
+                                <table id="dataTable"
+                                       class="table table-hover table-striped table-bordered text-center">
+                                    <thead>
+                                    <tr class="info">
+                                        <th field="checkbox"><input type="checkbox" name="checkAll" id="checkAll"
+                                                                    value=""/></th>
+                                        <th field="{getV(mType)}">媒体类型</th>
+                                        <th field="name">名称</th>
+                                        <th field="descc">描述</th>
+                                        <th field="opeUser">上传人</th>
+                                        <th field="opeTime">上传时间</th>
+                                        <th field="{getT(status)}">状态</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td colspan="7">
+                                            <span class="box-title">数据加载中....</span>
+                                            <i class="fa fa-refresh fa-spin"></i>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row" id="pageDiv">
+                        </div>
+                </div>
+            </div>
+    </section>
+</div>
+<script>
+    $(function () {
+
+        $('#dataTable').initTableData({"url":"/media/mediaList", "data": {"size": 10}});
+    });
+    var winId = "mediaWinId";
+    function edit() {
+        var ins = $('#dataTable input:checked')
+        if (ins.length!=1){
+            swal('提示信息','请选择一条信息进行配置操作..',"warning")
+            return
+        }
+        var _v =JSON.parse(ins.val())
+        $('#container').load("/store/storeConfig?id="+_v.id);
+    }
+    function getT(e) {
+        if (e == 1) {
+            return "发布";
+        } else if (e == 2) {
+            return "下线";
+        } else if (e == 0) {
+            return "未发布";
+        }
+    }
+    function getV(e) {
+        if (e == 1) {
+            return"公共资源"
+        }else if(e==2){
+            return "门店资源"
+        }else   {
+            return "暂无数据"
+        }
+    }
+    $(".add").click(function () {
+        modals.openWin({
+            winId: winId,
+            title: '新增多媒体信息',
+            width: '800px',
+            url: "/media/edit"
+        });
+    });
+    $(".edit").click(function () {
+        var chk_value = [];
+        $('table tbody tr').find('input[type="checkbox"]:checked').each(function () {
+            let parse = JSON.parse($(this).val());
+            chk_value.push(parse.id);
+        });
+
+        var chk_value_length = chk_value.length;
+        if (chk_value_length > 0) {
+            if (chk_value_length === 1) {
+                var id = chk_value.join(",");
+                modals.openWin({
+                    winId: winId,
+                    title: '编辑多媒体信息',
+                    width: '800px',
+                    url: "/media/edit?id=" + id
+                });
+            } else {
+                swal('请选择一条信息进行操作..', '提示信息', "warning")
+            }
+        } else {
+            swal('请选择一条信息进行配置操作..', '提示信息', "warning")
+        }
+    });
+    $(".delete").click(function () {
+        var chk_value = [];
+        $('table tbody tr').find('input[type="checkbox"]:checked').each(function () {
+            let parse = JSON.parse($(this).val());
+            chk_value.push(parse.id);
+        });
+        var chk_value_length = chk_value.length;
+        if (chk_value_length > 0) {
+            swal({
+                    title: "确定删除吗？",
+                    text: "你将无法恢复该数据！",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "确定删除！",
+                    cancelButtonText: "取消删除！",
+                    closeOnConfirm: false,
+                    closeOnCancel: false
+                },
+                function (isConfirm) {
+                    if (isConfirm) {
+                        var ids = chk_value.join(",");
+                        ajaxGet('/media/delete', {"ids": ids}, function (data) {
+                            if (data.success) {
+                                swal("删除成功", '提示信息', "success");
+
+                                modals.hideWin(winId);
+                                $('#dataTable').initTableData( {"url":"/media/mediaList","data":{"size":10}});
+                            } else {
+                                swal(data.message, '提示信息', "warning");
+                            }
+                        });
+
+                    } else {
+                        swal("取消！", "提示信息",
+                            "success");
+                    }
+                });
+
+        } else {
+            swal('请选择要删除的数据..', '提示信息', "warning")
+        }
+    });
+</script>
+</body>
+</html>

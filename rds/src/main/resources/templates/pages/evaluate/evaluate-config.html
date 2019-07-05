@@ -1,0 +1,143 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!--<div th:include="common/resource :: #resource_html"></div>-->
+    <title>测评配置管理</title>
+
+</head>
+<body>
+<div>
+    <section class="content">
+            <div class="box box-info">
+                <div class="box-body">
+                    <div class="dataTables_wrapper form-inline dt-bootstrap">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <a href="#" class="btn   left20" role="button" onclick="add()">
+                                    <span class=" glyphicon glyphicon-plus" aria-hidden="true"
+                                          style="margin-right: 5px"></span>初始化</a>
+                                <a href="#" class="btn   left20" role="button" onclick="config()">
+                                    <span class=" glyphicon glyphicon-edit" aria-hidden="true"
+                                          style="margin-right: 5px"></span>配 置</a>
+                                <table id="dataTable"
+                                       class="table table-hover table-striped table-bordered text-center">
+                                    <thead>
+                                    <tr class="info">
+                                        <th field="checkbox"><input type="checkbox" name="checkAll" id="checkAll"
+                                                                    value=""/></th>
+                                        <th field="{getT(evaUserLevel)}">评价人级别</th>
+                                        <th field="{getE(beEvaUserLevel)}">被评价人级别</th>
+                                        <th field="evaType">评价类型</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td colspan="3">
+                                            <span class="box-title">数据加载中....</span>
+                                            <i class="fa fa-refresh fa-spin"></i>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row" id="pageDiv">
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </section>
+
+
+</div>
+<script>
+    $(function () {
+        $('#dataTable').initTableData({"url": "/evaluateConfig/configList", "data": {"size": 10}});
+    })
+
+    function add() {
+        var data = new Array();
+        data.push({"evaUserLevel": "1", "beEvaUserLevel": "2", "evaType": "C", "methodType": "1"})
+        data.push({"evaUserLevel": "2", "beEvaUserLevel": "2", "evaType": "B", "methodType": "1"})
+        data.push({"evaUserLevel": "2", "beEvaUserLevel": "4", "evaType": "C", "methodType": "2"})
+        data.push({"evaUserLevel": "4", "beEvaUserLevel": "2", "evaType": "A", "methodType": "2"})
+        data.push({"evaUserLevel": "4", "beEvaUserLevel": "4", "evaType": "B", "methodType": "1"})
+        data.push({"evaUserLevel": "4", "beEvaUserLevel": "5", "evaType": "C", "methodType": "1"})
+        data.push({"evaUserLevel": "5", "beEvaUserLevel": "4", "evaType": "A", "methodType": "1"})
+        data.push({"evaUserLevel": "5", "beEvaUserLevel": "5", "evaType": "B", "methodType": "1"})
+        var jd = JSON.stringify(data);
+        $.ajax({
+            type:"post",
+            dataType:"json",
+            data:jd,
+            contentType:"application/json",
+            url:"/evaluateConfig/init",
+            success:function (resp) {
+                if (resp.responseCode!=1){
+                    swal(resp.errMessage,"提示信息","warning")
+                }else {
+                    $('#dataTable').initTableData({"url": "/evaluateConfig/configList", "data": {"size": 10}});
+                    swal("初始化成功","提示信息","success");
+                }
+
+            }
+
+        })
+
+    }
+
+
+    function config() {
+        var ins = $('#dataTable input:checked')
+        if (ins.length != 1) {
+            swal('请选择一条信息进行配置操作..', '提示信息', "warning")
+            return
+        }
+        var _v = JSON.parse(ins.val())
+
+       $('#container').load("/evaluateConfig/evaluateConfig?id=" + _v.id+"&subType="+_v.subType);
+
+    }
+
+    function getT(e) {
+        if (e == 1) {
+            return "集团领导"
+        } else if (e == 2) {
+            return "集团管理"
+
+        } else if (e == 4) {
+            return "门店管理"
+
+        } else if (e == 5) {
+            return "门店员工"
+
+        } else {
+            return "暂无数据"
+        }
+    }
+
+    function getE(e) {
+        if (e == 1) {
+            return "集团领导"
+        } else if (e == 2) {
+            return "集团管理"
+
+        } else if (e == 4) {
+            return "门店管理"
+
+        } else if (e == 5) {
+            return "门店员工"
+
+        } else {
+            return "暂无数据"
+        }
+    }
+
+    function getV(e) {
+        console.log("" + e)
+
+    }
+</script>
+</body>
+</html>

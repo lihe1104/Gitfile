@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+        <li class="fa fa-remove"></li>
+    </button>
+    <h5 class="modal-title"></h5>
+</div>
+
+<div class="modal-body">
+    <form id="role_form" name="role_form" class="form-horizontal">
+        <input type="hidden" name="id" th:value="${id}"/>
+        <div class="box-body">
+            <div class="col-md-10">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">角色名称<span style="color:red">*</span></label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="role_name" name="role_name" placeholder="请填写角色名称"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">中文角色名称<span style="color:red">*</span></label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="role_name_Zh" name="role_name_Zh"
+                               placeholder="请填写中文角色名称"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="box-footer text-right">
+            <button type="button" class="btn btn-default" data-btn-type="cancel" data-dismiss="modal">取消</button>
+            <button type="submit" class="btn btn-primary" data-btn-type="save">提交</button>
+        </div>
+    </form>
+</div>
+<script th:inline="javascript">
+    var form;
+    $(function () {
+        var id = [[${id}]];
+        //初始化表单
+        form = $("#role_form").form();
+        //数据校验
+        $("#role_form").bootstrapValidator({
+            message: '请输入有效值',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            submitHandler: function () {
+                var generator = form.getFormSimpleData();
+                ajaxPost('/role/saveRole', JSON.stringify(generator), function (data) {
+                    if (data.success) {
+                        swal("保存成功","提示信息","success")
+                       modals.hideWin(winId);
+                        initTable();
+                    } else {
+                        swal(data.message,"提示信息","error")
+                     /*   modals.info(data.message);*/
+                    }
+                });
+            },
+            fields: {
+                "role_name": {
+                    validators: {
+                        notEmpty: {message: '角色名称不能为空'}
+                    }
+                },
+                "role_name_Zh": {
+                    validators: {
+                        notEmpty: {message: '中文角色名称不能为空'}
+                    }
+                }
+            }
+        });
+        //初始化控件
+        form.initComponent();
+        //编辑回填
+        if (id > 0) {
+            ajaxGet("/role/get/" + id, null, function (data) {
+                form.initFormData(data);
+            });
+        }
+    });
+
+</script>
+</html>

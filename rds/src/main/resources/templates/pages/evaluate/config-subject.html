@@ -1,0 +1,90 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!--<div th:include="common/resource :: #resource_html"></div>-->
+    <!--<link rel="stylesheet" th:href="@{/zTree_v3/css/zTreeStyle/zTreeStyle.css}"/>-->
+    <!--<script type="text/javascript" th:src="@{/zTree_v3/js/jquery.ztree.all.js}"></script>-->
+
+    <title>门店配置</title>
+</head>
+<body>
+<input type="hidden" th:value="${id}" id="idHidden"/>
+<input type="hidden" th:value="${subType}" id="subTypeH"/>
+<section class="content">
+    <div class="box box-info">
+        <div class="box-body">
+            <div class="dataTables_wrapper form-inline dt-bootstrap">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <a href="#" class="btn   left20" role="button" onclick="add()">
+                                    <span class=" glyphicon glyphicon-plus" aria-hidden="true"
+                                          style="margin-right: 5px"></span>保 存</a>
+                        <a href="javascript:void (0)" class="btn   left20" role="button">
+                                    <span class=" glyphicon " aria-hidden="true"
+                                          style="margin-right: 5px"></span> 当前配置测评项 :<span id="v"></span></a>
+
+                        <table id="dataTable"
+                               class="table table-hover table-striped table-bordered text-center">
+                            <thead>
+                            <tr class="info">
+                                <th field="checkbox"><input type="checkbox" name="checkAll" id="checkAll"
+                                                            value=""/></th>
+                                <th field="name">评测项名称</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td colspan="3">
+                                    <span class="box-title">数据加载中....</span>
+                                    <i class="fa fa-refresh fa-spin"></i>
+                                </td>
+                            </tr>
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+                <div class="row" id="pageDiv">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    $(function () {
+        var subType = $('#subTypeH').val();
+        if (subType != "null" && subType != undefined) {
+            $.get("/evaluate/getI", {"subType": subType}, function (resp) {
+                $('#v').html(resp.data[0].name);
+            })
+        }
+        if (subType != "null") {
+            $('#dataTable').initTableData({"url": "/evaluate/evaluateList", "data": {"size": 10}, "checkId": subType});
+        } else {
+            $('#dataTable').initTableData({"url": "/evaluate/evaluateList", "data": {"size": 10}});
+
+        }
+    })
+
+    function add() {
+        var ins = $('#dataTable input:checked')
+        if (ins.length != 1) {
+            swal('请选择一条信息进行配置操作..', '提示信息', "warning")
+            return
+        }
+        var _v = JSON.parse(ins.val())
+        var subType = _v.id;
+        var id = $('#idHidden').val();
+        $.post("/evaluateConfig/save", {"id": id, "subType": subType}, function (resp) {
+            if (resp.responseCode == 1) {
+                swal("保存成功", "提示信息", "success")
+                $('#dataTable').initTableData({"url": "/evaluate/evaluateList", "data": {"size": 10}, "checkId": subType});
+            } else {
+                swal(resp.errMessage, "提示信息", "error")
+                $('#dataTable').initTableData({"url": "/evaluate/evaluateList", "data": {"size": 10}});
+            }
+        }, 'json')
+    }
+</script>
+</body>
+</html>

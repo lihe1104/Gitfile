@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+        <li class="fa fa-remove"></li>
+    </button>
+    <h5 class="modal-title"></h5>
+</div>
+
+<div class="modal-body">
+    <form id="media_form" name="media_form" class="form-horizontal">
+        <input type="hidden" name="id" th:value="${id}"/>
+        <div class="box-body">
+            <div class="col-md-10">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">媒体类型<span style="color:red">*</span></label>
+                    <div class="col-sm-6">
+                        <select id="editormd-theme-select" class="form-control select2" name="mType"
+                                style="width: 100%">
+                            <option value="">请选择</option>
+                            <option value="1">公共资源</option>
+                            <option value="2">门店资源</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">媒体名称<span style="color:red">*</span></label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="name" name="name"
+                               placeholder="请填写媒体名称名称"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">描述<span style="color:red">*</span></label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="descc" name="descc"
+                               placeholder="请填写描述"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">媒体路径<span style="color:red"></span></label>
+                    <div class="col-sm-6">
+                        <input type="file" name="file" class="myfile"/>
+                        <input type="hidden" class="form-control" style="display: block; width: 100%; height: 34px;padding: 6px 12px; font-size: 14px; line-height: 1.42857143;
+                             color: #555;
+                             background-color: #fff;
+                                background-image: none;
+                                 border: 1px solid #ccc;" name="url" id="url" readonly placeholder="请填写媒体路径"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">状态<span style="color:red">*</span></label>
+                    <div class="col-sm-6">
+                        <select id="editormd-status-select" class="form-control select2" name="status"
+                                style="width: 100%">
+                            <option value="">请选择</option>
+                            <option value="0">未发布</option>
+                            <option value="1">发布</option>
+                            <option value="2">下线</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="box-footer text-right">
+            <button type="button" class="btn btn-default" data-btn-type="cancel" data-dismiss="modal">取消</button>
+            <button type="submit" class="btn btn-primary save_submit" data-btn-type="save">提交</button>
+        </div>
+    </form>
+</div>
+<script th:inline="javascript">
+    var form;
+    $(function () {
+        $(".select2").select2();
+        var id = [[${id}]];
+        //初始化表单
+        form = $("#media_form").form();
+        //数据校验
+        $("#media_form").bootstrapValidator({
+            message: '请输入有效值',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            submitHandler: function () {
+                var url = $("#url").val();
+                var generator = form.getFormSimpleData();
+                swal({
+                        title: "请确认视频已经上传完成？",
+                        text: "提示信息！",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "确定！",
+                        cancelButtonText: "取消！",
+                        closeOnConfirm: false,
+                        closeOnCancel: false
+                    },
+                    function (isConfirm) {
+                        if (isConfirm && url != "") {
+                            ajaxPost('/media/save', JSON.stringify(generator), function (data) {
+                                if (data.success) {
+                                    swal("上传成功", "提示信息", "success")
+                                    $('#dataTable').initTableData({"url": "/media/mediaList", "data": {"size": 10}});
+                                    modals.hideWin(winId);
+                                } else {
+                                    swal("上传成功", "提示信息", "error");
+                                }
+                            });
+                        } else {
+                            swal("请等待视频上传状态完成,在点击保存按钮", "提示信息", "warning");
+                        }
+                    });
+            },
+            fields: {
+                "mType": {
+                    validators: {
+                        notEmpty: {message: '媒体类型不能为空'}
+                    }
+                },
+                "name": {
+                    validators: {
+                        notEmpty: {message: '媒体名称不能为空'}
+                    }
+                },
+                "descc": {
+                    validators: {
+                        notEmpty: {message: '描述不能为空'}
+                    }
+                },
+                // "url": {
+                //     validators: {
+                //         notEmpty: {message: '媒体路径不能为空'}
+                //     }
+                // },
+                "status": {
+                    validators: {
+                        notEmpty: {message: '发布状态不能为空'}
+                    }
+                }
+            }
+        });
+        //初始化控件
+        form.initComponent();
+        //编辑回填
+        if (id > 0) {
+            ajaxGet("/media/get/" + id, null, function (data) {
+                form.initFormData(data);
+            });
+        }
+        var val = $("#url").val();
+        if (val !== undefined && val !== null && val !== "") {
+            $(".myfile").remove();
+            $("#url").attr("type", "text");
+            // $.ajax({
+            //     type: 'post',
+            //     async: false,
+            //     url: "/sysMember/getUrl",
+            //     data: {
+            //         name: val
+            //     },
+            //     dataType: 'json',
+            //     success: function (data) {
+            //         if (data.success) {
+            //             initFileInput(val)
+            //         }else {
+            //             initFileInput("");
+            //         }
+            //     }
+            // });
+        } else {
+            initFileInput("");
+        }
+    });
+
+    function initFileInput(path) {
+        var ter = [];
+        if (path !== "") {
+
+            ter.push(" <source src='blob:" + path + "' type='video/mp4'>")
+        }
+        $(".myfile").fileinput({
+            language: 'zh',
+            uploadUrl: "/home/bluefire/web/mediaTmp", //接受请求地址
+            uploadAsync: true, //默认异步上传
+            showUpload: false, //是否显示上传按钮,跟随文本框的那个
+            showRemove: false, //显示移除按钮,跟随文本框的那个
+            showCaption: true,//是否显示标题,就是那个文本框
+            dropZoneEnabled: false,//是否显示拖拽区域，默认不写为true，但是会占用很大区域
+            showClose: false,
+            minFileCount: 1,
+            maxFileCount: 1,
+            initialPreview: ter,
+            overwriteInitial: true,//不覆盖已存在的图片
+            autoReplace:true,
+            layoutTemplates:{
+                actionUpload:'' ,    //设置为空可去掉上传按钮
+                actionDelete:''  //设置为空可去掉删除按钮
+            },
+        }).on("filebatchselected", function (event, files) {
+            $(this).fileinput("upload");
+        }).on('fileuploaded', function (event, data, msg) {
+            if (data.response.code === 200) {
+                $("#url").val(data.response.message);
+            } else {
+                swal("上传失败 请重新选择!", '提示信息', "warning");
+            }
+
+        });
+    }
+</script>
+</html>

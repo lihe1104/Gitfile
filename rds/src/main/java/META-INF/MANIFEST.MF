@@ -1,0 +1,64 @@
+Manifest-Version: 1.0
+Class-Path: error_prone_annotations-2.0.18.jar spring-orm-4.3.24.RELEA
+ SE.jar aliyun-java-sdk-ram-3.0.0.jar spring-boot-starter-tomcat-1.5.2
+ 1.RELEASE.jar tomcat-embed-el-8.5.40.jar jcl-over-slf4j-1.7.26.jar sp
+ ring-aop-4.3.24.RELEASE.jar spring-boot-starter-1.5.21.RELEASE.jar lo
+ gback-classic-1.1.11.jar jackson-core-asl-1.8.3.jar spring-boot-start
+ er-security-1.5.21.RELEASE.jar spring-boot-devtools-1.5.21.RELEASE.ja
+ r spring-beans-4.3.24.RELEASE.jar dom4j-1.6.1.jar jandex-2.0.0.Final.
+ jar activation-1.1.1.jar thymeleaf-3.0.2.RELEASE.jar druid-1.1.9.jar 
+ mybatis-spring-1.3.2.jar commons-collections-3.2.2.jar slf4j-api-1.7.
+ 26.jar poi-3.17.jar thymeleaf-expression-processor-1.1.2.jar tomcat-e
+ mbed-websocket-8.5.40.jar thymeleaf-spring4-3.0.2.RELEASE.jar xml-api
+ s-1.4.01.jar springfox-spi-2.8.0.jar attoparser-2.0.1.RELEASE.jar jer
+ sey-core-1.9.jar antlr-2.7.7.jar jsr305-1.3.9.jar spring-boot-actuato
+ r-1.5.21.RELEASE.jar jackson-jaxrs-1.8.3.jar spring-jdbc-4.3.24.RELEA
+ SE.jar json-lib-2.4-jdk15.jar jackson-core-2.8.11.jar org.jacoco.agen
+ t-0.8.3-runtime.jar unbescape-1.1.4.RELEASE.jar commons-collections4-
+ 4.1.jar jboss-logging-3.3.2.Final.jar quartz-2.3.0.jar xercesImpl-2.1
+ 1.0.jar spring-aspects-4.3.24.RELEASE.jar spring-boot-starter-jdbc-1.
+ 5.21.RELEASE.jar mybatis-spring-boot-starter-1.3.2.jar commons-pool2-
+ 2.4.3.jar spring-boot-1.5.21.RELEASE.jar validation-api-1.1.0.Final.j
+ ar aliyun-java-sdk-sts-3.0.0.jar spring-core-4.3.24.RELEASE.jar sprin
+ g-boot-starter-mail-1.5.21.RELEASE.jar jettison-1.1.jar hibernate-val
+ idator-5.3.6.Final.jar spring-boot-starter-logging-1.5.21.RELEASE.jar
+  log4j-over-slf4j-1.7.26.jar tomcat-jdbc-8.5.40.jar c3p0-0.9.5.2.jar 
+ spring-context-4.3.24.RELEASE.jar httpclient-4.5.8.jar hibernate-jpa-
+ 2.1-api-1.0.0.Final.jar jaxb-core-2.3.0.1.jar commons-codec-1.10.jar 
+ aliyun-sdk-oss-3.1.0.jar commons-lang3-3.1.jar byte-buddy-1.7.9.jar s
+ pring-plugin-core-1.2.0.RELEASE.jar spring-data-jpa-1.11.22.RELEASE.j
+ ar spring-boot-starter-web-1.5.21.RELEASE.jar groovy-2.4.17.jar javax
+ .transaction-api-1.2.jar springfox-schema-2.8.0.jar spring-security-w
+ eb-4.2.12.RELEASE.jar jaxb-api-2.1.jar druid-spring-boot-starter-1.1.
+ 9.jar swagger-annotations-1.5.14.jar fastjson-1.2.47.jar aliyun-java-
+ sdk-ecs-4.2.0.jar mysql-connector-java-5.1.47.jar aliyun-java-sdk-vod
+ -2.15.2.jar springfox-spring-web-2.8.0.jar jackson-xc-1.8.3.jar stax-
+ api-1.0-2.jar tomcat-embed-core-8.5.40.jar commons-logging-1.1.1.jar 
+ jul-to-slf4j-1.7.26.jar httpcore-4.4.11.jar jersey-json-1.9.jar aliyu
+ n-java-vod-upload-1.4.8.jar mapstruct-1.2.0.Final.jar spring-boot-aut
+ oconfigure-1.5.21.RELEASE.jar jdom-1.1.jar javassist-3.21.0-GA.jar cl
+ assmate-1.3.4.jar springfox-swagger-common-2.8.0.jar commons-beanutil
+ s-1.9.3.jar jackson-annotations-2.8.0.jar spring-security-core-4.2.12
+ .RELEASE.jar jjwt-0.9.0.jar spring-boot-starter-thymeleaf-1.5.21.RELE
+ ASE.jar springfox-bean-validators-2.8.0.jar reflections-0.9.11.jar sp
+ ring-boot-starter-actuator-1.5.21.RELEASE.jar snakeyaml-1.17.jar stax
+ -api-1.0.1.jar thymeleaf-layout-dialect-2.0.5.jar spring-security-con
+ fig-4.2.12.RELEASE.jar hibernate-core-5.0.12.Final.jar spring-context
+ -support-4.3.24.RELEASE.jar json-20170516.jar spring-expression-4.3.2
+ 4.RELEASE.jar springfox-core-2.8.0.jar ezmorph-1.0.6.jar hibernate-co
+ mmons-annotations-5.0.1.Final.jar spring-plugin-metadata-1.2.0.RELEAS
+ E.jar commons-lang-2.5.jar j2objc-annotations-1.1.jar logback-core-1.
+ 1.11.jar tomcat-juli-8.5.40.jar springfox-swagger-ui-2.8.0.jar spring
+ -web-4.3.24.RELEASE.jar spring-tx-4.3.24.RELEASE.jar spring-boot-star
+ ter-aop-1.5.21.RELEASE.jar mybatis-spring-boot-autoconfigure-1.3.2.ja
+ r mchange-commons-java-0.2.11.jar guava-23.0.jar swagger-models-1.5.1
+ 4.jar jackson-databind-2.8.11.3.jar animal-sniffer-annotations-1.14.j
+ ar jaxb-impl-2.3.2.jar HikariCP-java6-2.3.13.jar jackson-mapper-asl-1
+ .8.3.jar spring-boot-starter-data-jpa-1.5.21.RELEASE.jar javax.mail-1
+ .5.6.jar hibernate-entitymanager-5.0.12.Final.jar tomcat-annotations-
+ api-8.5.40.jar gson-2.8.2.jar aliyun-java-sdk-core-4.3.3.jar springfo
+ x-swagger2-2.8.0.jar mybatis-3.4.6.jar aspectjweaver-1.8.14.jar nekoh
+ tml-1.9.22.jar spring-webmvc-4.3.24.RELEASE.jar spring-data-commons-1
+ .13.22.RELEASE.jar
+Main-Class: com.kunyong.rds.RdsApplication
+
